@@ -1,0 +1,52 @@
+CREATE TABLE `authjs_v5_01_account` (
+	`userId` text NOT NULL,
+	`type` text NOT NULL,
+	`provider` text NOT NULL,
+	`providerAccountId` text NOT NULL,
+	`refresh_token` text,
+	`access_token` text,
+	`expires_at` integer,
+	`token_type` text,
+	`scope` text,
+	`id_token` text,
+	`session_state` text,
+	PRIMARY KEY(`provider`, `providerAccountId`),
+	FOREIGN KEY (`userId`) REFERENCES `authjs_v5_01_user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `authjs_v5_01_authenticator` (
+	`credentialID` text NOT NULL,
+	`userId` text NOT NULL,
+	`providerAccountId` text NOT NULL,
+	`credentialPublicKey` text NOT NULL,
+	`counter` integer NOT NULL,
+	`credentialDeviceType` text NOT NULL,
+	`credentialBackedUp` integer NOT NULL,
+	`transports` text,
+	PRIMARY KEY(`userId`, `credentialID`),
+	FOREIGN KEY (`userId`) REFERENCES `authjs_v5_01_user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `authjs_v5_01_authenticator_credentialID_unique` ON `authjs_v5_01_authenticator` (`credentialID`);--> statement-breakpoint
+CREATE TABLE `authjs_v5_01_session` (
+	`sessionToken` text PRIMARY KEY NOT NULL,
+	`userId` text NOT NULL,
+	`expires` integer NOT NULL,
+	FOREIGN KEY (`userId`) REFERENCES `authjs_v5_01_user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `authjs_v5_01_user` (
+	`id` text PRIMARY KEY NOT NULL,
+	`name` text,
+	`email` text,
+	`emailVerified` integer,
+	`image` text
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `authjs_v5_01_user_email_unique` ON `authjs_v5_01_user` (`email`);--> statement-breakpoint
+CREATE TABLE `authjs_v5_01_verificationToken` (
+	`identifier` text NOT NULL,
+	`token` text NOT NULL,
+	`expires` integer NOT NULL,
+	PRIMARY KEY(`identifier`, `token`)
+);
