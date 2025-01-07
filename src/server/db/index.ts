@@ -16,8 +16,6 @@ export const client =
   createClient({
     url: env.DATABASE_URL,
     authToken: env.DATABASE_AUTH_TOKEN,
-    // syncUrl: env.DATABASE_URL_PROD,
-    // syncInterval: 60000,
   });
 if (env.NODE_ENV !== "production") globalForDb.client = client;
 
